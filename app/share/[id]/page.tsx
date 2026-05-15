@@ -3,12 +3,16 @@ import { supabase } from '../../../utils/supabase'
 import Link from 'next/link'
 
 interface Props {
-  params: { id: string }
-  searchParams: { v?: string }
+  params: Promise<{ id: string }> // Promise型に変更
+  searchParams: Promise<{ v?: string }> // searchParamsもPromise型に変更
 }
 
 // 1. 動的メタデータ生成 (𝕏のクローラー向け)
-export async function generateMetadata({ params, searchParams }: Props): Promise<Metadata> {
+export async function generateMetadata(props: Props): Promise<Metadata> {
+  // params と searchParams を await する
+  const params = await props.params;
+  const searchParams = await props.searchParams;
+  
   const boxId = params.id
   const version = searchParams.v || Date.now().toString()
 
@@ -28,7 +32,7 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
   const title = `匿名投票の結果発表！`
   const description = `${count || 0}人が回答してくれた集計結果をチェックしよう。`
   
-  // 動的OGP画像のURL (api/og/[id]/route.tsx を叩く)
+  // 動的OGP画像のURL
   const ogImageUrl = `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/og/${boxId}?v=${version}`
 
   return {
@@ -50,11 +54,13 @@ export async function generateMetadata({ params, searchParams }: Props): Promise
 }
 
 // 2. ページ本体 (リンクをクリックしたユーザー向け)
-export default async function SharePage({ params }: Props) {
+export default async function SharePage(props: Props) {
+  // ここでも params を await する
+  const params = await props.params;
   const boxId = params.id
 
   // データの再取得
-  const { data: box } = await supabase
+  const { data: box, error } = await supabase
     .from('boxes')
     .select('*')
     .eq('id', boxId)
@@ -65,15 +71,24 @@ export default async function SharePage({ params }: Props) {
     .select('*', { count: 'exact', head: true })
     .eq('box_id', boxId)
 
+  // デバッグ用: もし見つからない場合はIDを表示する
   if (!box) {
-    return <div className="p-10 text-center">箱が見つかりませんでした。</div>
+    return (
+      <div className="p-10 text-center font-sans">
+        <h1 className="text-xl font-bold mb-4">箱が見つかりませんでした</h1>
+        <p className="text-gray-500 mb-2">お探しのページは削除されたか、URLが間違っている可能性があります。</p>
+        <p className="text-xs text-gray-400">Debug ID: {boxId}</p>
+        {error && <p className="text-xs text-red-400 mt-2">Error: {error.message}</p>}
+        <Link href="/" className="inline-block mt-6 text-blue-600 underline">トップへ戻る</Link>
+      </div>
+    )
   }
 
   return (
     <div className="max-w-xl mx-auto p-6 min-h-screen font-sans text-slate-900 bg-white">
       <header className="text-center mb-8">
         <h1 className="text-2xl font-black mb-2">集計結果ページ</h1>
-        <p className="text-slate-500 font-bold">現在の回答数: {count}件</p>
+        <p className="text-slate-500 font-bold">現在の回答数: {count || 0}件</p>
       </header>
 
       <div className="bg-slate-50 rounded-2xl border-2 border-slate-200 p-6 mb-8 shadow-sm">
@@ -82,9 +97,8 @@ export default async function SharePage({ params }: Props) {
           <strong>「グラフ付き画像」</strong>が表示されています。
         </p>
         
-        {/* ブラウザで見ているユーザーにも簡易的な結果を表示する場合、ここにロジックを追加可能 */}
         <div className="flex justify-center">
-            <div className="bg-white border-2 border-slate-200 rounded-xl p-4 text-center">
+            <div className="bg-white border-2 border-slate-200 rounded-xl p-4 text-center w-full">
                 <p className="text-xs font-bold text-slate-400 uppercase mb-1">Preview</p>
                 <img 
                     src={`/api/og/${boxId}?v=${Date.now()}`} 
