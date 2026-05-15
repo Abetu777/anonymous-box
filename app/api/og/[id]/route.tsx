@@ -5,10 +5,8 @@ export const runtime = 'edge';
 
 export async function GET(
   request: Request,
-  // params を Promise 型に変更
   { params }: { params: Promise<{ id: string }> }
 ) {
-  // params を await して id を取得
   const { id: boxId } = await params;
 
   // 1. 箱の情報（質問内容）を取得
@@ -20,11 +18,11 @@ export async function GET(
 
   if (!box) return new Response('Not Found', { status: 404 });
 
-  // 2. 全回答データを取得
+  // 2. 全回答データを取得 ★ここを修正しました★
   const { data: responses } = await supabase
     .from('responses')
     .select('answers')
-    .eq('box_id', boxId);
+    .eq('box_id', boxId); // 'id' ではなく 'box_id' で検索
 
   const totalCount = responses?.length || 0;
   const questions = box.questions || [];
