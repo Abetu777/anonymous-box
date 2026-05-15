@@ -24,7 +24,7 @@ export async function GET(
   const { data: responses } = await supabase
     .from('responses')
     .select('answers')
-    .eq('id', boxId);
+    .eq('box_id', boxId);
 
   const totalCount = responses?.length || 0;
   const questions = box.questions || [];
