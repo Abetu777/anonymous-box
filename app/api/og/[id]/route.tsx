@@ -5,10 +5,11 @@ export const runtime = 'edge'; // 高速動作させるために必須
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  // 1. DBから回答数を取得
-  const { data: box } = await supabase.from('boxes').select('id').eq('user_id', params.id).single();
+  const { id } = await params;
+// 1. DBから回答数を取得 (params.id ではなく id を使う)
+  const { data: box } = await supabase.from('boxes').select('id').eq('user_id', id).single();
   const { count } = await supabase
     .from('responses')
     .select('*', { count: 'exact', head: true })
