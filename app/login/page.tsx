@@ -68,7 +68,8 @@ export default function LoginPage() {
             disabled 
             className="w-full flex items-center justify-center gap-3 bg-slate-100 text-slate-400 font-bold py-3 px-4 border-2 border-dashed border-slate-200 rounded-xl cursor-not-allowed"
           >
-            𝕏 (Twitter) でログイン 
+            𝕏 (Twitter) でログイン (準備中)
+          </button>
          
         </div>
 
