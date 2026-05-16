@@ -18,6 +18,16 @@ export default function LoginPage() {
     if (error) alert(error.message)
   }
 
+  const handleTwitterLogin = async () => {
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'twitter', // twitterを指定
+    options: {
+      redirectTo: `${window.location.origin}/dashboard` // ログイン後はダッシュボードへ
+    }
+  })
+  if (error) alert(error.message)
+}
+
   // メールログイン用の処理
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -48,29 +58,29 @@ export default function LoginPage() {
         </div>
 
         {/* -------------------- オプション1: ソーシャルログイン -------------------- */}
-        <div className="space-y-3 mb-6">
-          <button 
-            onClick={handleGoogleLogin} 
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 border-2 border-slate-200 rounded-xl shadow-sm transition-all active:scale-[0.98] cursor-pointer"
-          >
-            {/* GoogleのGマークを模した簡易アイコン */}
-            <svg className="w-5 h-5" viewBox="0 0 24 24">
-              <path fill="#EA4335" d="M12 5.04c1.66 0 3.2.57 4.4 1.74l3.24-3.24C17.67 1.63 15.02 1 12 1 7.37 1 3.4 3.65 1.48 7.52l3.86 3C6.27 7.6 8.87 5.04 12 5.04z"/>
-              <path fill="#4285F4" d="M23.48 12.25c0-.82-.07-1.62-.2-2.4H12v4.56h6.48c-.28 1.48-1.12 2.74-2.38 3.58l3.7 2.87c2.16-2 3.68-4.94 3.68-8.61z"/>
-              <path fill="#FBBC05" d="M5.34 10.52A7.16 7.16 0 0 1 5 12c0 .52.04 1.03.12 1.54l-3.86 3A11.91 11.91 0 0 1 1 12c0-1.66.34-3.24.96-4.68l3.38 3.2z"/>
-              <path fill="#34A853" d="M12 23c3.24 0 5.97-1.08 7.96-2.91l-3.7-2.87c-1.03.69-2.35 1.1-3.92 1.1-3.13 0-5.73-2.56-6.66-5.48l-3.86 3C3.4 20.35 7.37 23 12 23z"/>
-            </svg>
-            Google アカウントでログイン
-          </button>
+          <div className="space-y-3 mb-6">
+            {/* Googleボタン */}
+            <button 
+              onClick={handleGoogleLogin} 
+              className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 border-2 border-slate-200 rounded-xl shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+            >
+              {/* (GoogleアイコンのSVGはそのまま維持してください) */}
+              Google アカウントでログイン
+            </button>
 
-          <button 
-            disabled 
-            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 border-2 border-slate-200 rounded-xl shadow-sm transition-all active:scale-[0.98] cursor-pointer"
-          >
-            𝕏でログイン 
-          </button>
-         
-        </div>
+            {/* 𝕏 (Twitter) ボタンの有効化！ */}
+            <button 
+              onClick={handleTwitterLogin} 
+              className="w-full flex items-center justify-center gap-3 bg-black hover:bg-slate-900 text-white font-bold py-3 px-4 border-2 border-slate-900 rounded-xl shadow-sm transition-all active:scale-[0.98] cursor-pointer"
+            >
+              {/* 𝕏のシンプルなロゴマーク */}
+              <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+              </svg>
+              𝕏 (Twitter) でログイン
+            </button>
+          </div>
+
 
         {/* 区切り線 */}
         <div className="flex items-center my-6">
