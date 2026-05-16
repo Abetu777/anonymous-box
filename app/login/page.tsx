@@ -63,12 +63,11 @@ export default function LoginPage() {
             Google アカウントでログイン
           </button>
 
-          {/* 将来的に𝕏ログインを有効化する際は、ここのコメントアウトを外して設定するだけ！ */}
           <button 
             disabled 
-            className="w-full flex items-center justify-center gap-3 bg-slate-100 text-slate-400 font-bold py-3 px-4 border-2 border-dashed border-slate-200 rounded-xl cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-3 bg-white hover:bg-slate-50 text-slate-700 font-bold py-3 px-4 border-2 border-slate-200 rounded-xl shadow-sm transition-all active:scale-[0.98] cursor-pointer"
           >
-            𝕏 (Twitter) でログイン (準備中)
+            𝕏でログイン 
           </button>
          
         </div>
