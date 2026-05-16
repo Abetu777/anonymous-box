@@ -64,13 +64,12 @@ export default function LoginPage() {
           </button>
 
           {/* 将来的に𝕏ログインを有効化する際は、ここのコメントアウトを外して設定するだけ！ */}
-          {/* <button 
+          <button 
             disabled 
             className="w-full flex items-center justify-center gap-3 bg-slate-100 text-slate-400 font-bold py-3 px-4 border-2 border-dashed border-slate-200 rounded-xl cursor-not-allowed"
           >
-            𝕏 (Twitter) でログイン (準備中)
-          </button>
-          */}
+            𝕏 (Twitter) でログイン 
+         
         </div>
 
         {/* 区切り線 */}
